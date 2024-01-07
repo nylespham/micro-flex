@@ -5,6 +5,9 @@
     },
     {
       "path": "msg-broker"
+    },
+    {
+      "path": "login-oauth"
     }
   ]
 }
