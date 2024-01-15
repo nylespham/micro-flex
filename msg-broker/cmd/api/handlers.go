@@ -22,7 +22,7 @@ func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
 		Error:   false,
 		Message: "hit the broker",
 	}
-	_ = app.WriteJSON(w, http.StatusAccepted, payLoad)
+	_ = app.WriteJSON(w, http.StatusOK, payLoad)
 }
 
 func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +48,7 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayLoad) {
 	jsonData, _ := json.MarshalIndent(a, "", "\t")
 
 	// call the login-oauth microservice
-	request, err := http.NewRequest("POST", "http://localhost:1800/authenticate", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://localhost:8080/authenticate", bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -67,7 +67,7 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayLoad) {
 	if response.StatusCode == http.StatusUnauthorized {
 		app.errorJSON(w, errors.New("invalid credentials"))
 		return
-	} else if response.StatusCode == http.StatusAccepted {
+	} else if response.StatusCode != http.StatusAccepted {
 		app.errorJSON(w, errors.New("errors calling auth microservice"))
 		return
 	}

@@ -22,12 +22,14 @@ func (app *Config) Authenticate(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		app.errorJSON(w, errors.New("invalid credentials"), http.StatusBadRequest)
+		return
 	}
 
 	valid, err := user.PasswordMatches(requestPayLoad.Password)
 
 	if err != nil || !valid {
 		app.errorJSON(w, errors.New("invalid credentials"), http.StatusBadRequest)
+		return
 	}
 
 	payLoad := jsonResponse{

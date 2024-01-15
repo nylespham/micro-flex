@@ -13,7 +13,7 @@ import (
 	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
-const port = "1800"
+const port = "8080"
 
 var count int64
 
@@ -34,7 +34,7 @@ func main() {
 	// set up config
 	app := Config{
 		DB:     conn,
-		Models: data.Models{},
+		Models: data.New(conn),
 	}
 
 	server := &http.Server{
@@ -66,7 +66,7 @@ func openDB(dsn string) (*sql.DB, error) {
 }
 
 func connectToDB() *sql.DB {
-	dsn := ".env"
+	dsn := "host=35.198.205.242 port=5433 dbname=postgres user=postgres password=P@ssw0rd sslmode=disable timezone=UTC connect_timeout=5"
 
 	for {
 

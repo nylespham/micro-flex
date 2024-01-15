@@ -8,7 +8,7 @@ import (
 )
 
 type jsonResponse struct {
-	Error   bool   `json:"ok"`
+	Error   bool   `json:"error"`
 	Message string `json:"message"`
 	Data    any    `json:"data,omitempty"`
 }

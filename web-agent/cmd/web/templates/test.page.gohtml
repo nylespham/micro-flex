@@ -53,12 +53,16 @@
 
             const body = {
                 method: "POST",
+                body: JSON.stringify(payload),
                 headers: headers,
-                body: JSON.stringify(payload)
+                
             }
 
             fetch("http:\/\/localhost:8300/handle", body)
-            .then((response) => response.json())
+            .then((response) => {
+                console.log(response)
+                return response.json()
+            })
             .then((data => {
                 sent.innerHTML = JSON.stringify(payload, undefined, 4);
                 received.innerHTML = JSON.stringify(data, undefined, 4);

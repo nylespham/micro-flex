@@ -8,6 +8,9 @@
     },
     {
       "path": "login-oauth"
+    },
+    {
+      "path": "msg-logger"
     }
   ]
 }
