@@ -11,6 +11,9 @@
     },
     {
       "path": "msg-logger"
+    },
+    {
+      "path": "msg-mail"
     }
   ]
 }
