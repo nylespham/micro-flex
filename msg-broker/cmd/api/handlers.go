@@ -11,6 +11,14 @@ type RequestPayLoad struct {
 	Action string      `json:"action"`
 	Auth   AuthPayLoad `json:"auth,omitempty"`
 	Log    LogPayLoad  `json:"log,omitempty"`
+	Mail   MailPayLoad `json:"mail,omitempty"`
+}
+
+type MailPayLoad struct {
+	From    string `json:"from"`
+	To      string `json:"to"`
+	Subject string `json:"subject"`
+	Message string `json:"message"`
 }
 
 type AuthPayLoad struct {
@@ -81,6 +89,8 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 		app.authenticate(w, requestPayLoad.Auth)
 	case "log":
 		app.logItem(w, requestPayLoad.Log)
+	case "mail":
+		app.sendMail(w, requestPayLoad.Mail)
 	default:
 		app.errorJSON(w, errors.New("invalid action"))
 	}
@@ -136,4 +146,41 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayLoad) {
 	payLoad.Data = jsonFromService.Data
 
 	app.WriteJSON(w, http.StatusAccepted, payLoad)
+}
+
+func (app *Config) sendMail(w http.ResponseWriter, msg MailPayLoad) {
+	jsonData, _ := json.MarshalIndent(msg, "", "\t")
+
+	mailServiceUrl := "http://localhost:4100/send"
+
+	request, err := http.NewRequest("POST", mailServiceUrl, bytes.NewBuffer(jsonData))
+
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	request.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+
+	response, err := client.Do(request)
+
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusAccepted {
+		app.errorJSON(w, errors.New("error calling mail microservice"))
+		return
+	}
+
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = "Successfully sent mail"
+
+	app.WriteJSON(w, http.StatusAccepted, payload)
 }

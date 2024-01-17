@@ -14,6 +14,12 @@
     },
     {
       "path": "msg-mail"
+    },
+    {
+      "path": "pipelines"
+    },
+    {
+      "path": "dockerfiles"
     }
   ]
 }

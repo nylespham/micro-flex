@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"log"
 	"text/template"
 	"time"
 
@@ -66,9 +67,11 @@ func (m *Mail) sendSMTPMessage(msg Message) error {
 	mailServer.KeepAlive = false
 	mailServer.ConnectTimeout = 10 * time.Second
 	mailServer.SendTimeout = 10 * time.Second
+
 	smtpClient, err := mailServer.Connect()
 
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 
@@ -86,6 +89,7 @@ func (m *Mail) sendSMTPMessage(msg Message) error {
 	err = email.Send(smtpClient)
 
 	if err != nil {
+		log.Println(err)
 		return err
 	}
 
@@ -93,7 +97,7 @@ func (m *Mail) sendSMTPMessage(msg Message) error {
 }
 
 func (m *Mail) buildHTMLMessage(msg Message) (string, error) {
-	templateToRender := "./templates/mail.page.gohtml"
+	templateToRender := "./templates/mail.html.gohtml"
 
 	t, err := template.New("email-html").ParseFiles(templateToRender)
 
@@ -103,7 +107,7 @@ func (m *Mail) buildHTMLMessage(msg Message) (string, error) {
 
 	var tpl bytes.Buffer
 
-	if err = t.ExecuteTemplate(&tpl, "email-html", msg.DataMap); err != nil {
+	if err = t.ExecuteTemplate(&tpl, "body", msg.DataMap); err != nil {
 		return "", err
 	}
 
@@ -129,7 +133,7 @@ func (m *Mail) buildPlainMessage(msg Message) (string, error) {
 
 	var tpl bytes.Buffer
 
-	if err = t.ExecuteTemplate(&tpl, "email-html", msg.DataMap); err != nil {
+	if err = t.ExecuteTemplate(&tpl, "body", msg.DataMap); err != nil {
 		return "", err
 	}
 
