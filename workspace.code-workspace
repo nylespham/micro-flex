@@ -20,6 +20,9 @@
     },
     {
       "path": "dockerfiles"
+    },
+    {
+      "path": "msg-listenner"
     }
   ]
 }

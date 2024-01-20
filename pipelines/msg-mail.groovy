@@ -3,7 +3,9 @@ pipeline {
         SERVICE="msg-mail"
         SERVICE_BINARY="/usr/local/bin/msg-mail"
     }
-    agent gcp
+    agent {
+        label "jenkins-02"
+    }
     stages {
         stage("Build Image"){
             steps {
