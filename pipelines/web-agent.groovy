@@ -14,7 +14,7 @@ pipeline {
         }
         stage("Run Container"){
             steps {
-                sh "sudo docker run -dp 4100:4100 ${SERVICE}:latest"
+                sh "sudo docker run -dp 8100:8100 ${SERVICE}:latest"
             }
         }
     }
