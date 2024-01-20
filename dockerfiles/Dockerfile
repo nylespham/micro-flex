@@ -7,8 +7,8 @@ RUN mkdir /${SERVICE_NAME}
 
 COPY ${SERVICE_NAME}/. /${SERVICE_NAME}
 
-RUN go mod download && go mod verify
+RUN go mod download 
 
-RUN go build -o ${BINARY} ./cmd/api
+RUN CGO_ENABLED=0 GOOS=linux go build -o ${BINARY} ./cmd/api
 
 CMD ["/${BINARY}"]
