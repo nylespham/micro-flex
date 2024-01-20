@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"msg-broker/event"
 	"net/http"
 )
 
@@ -91,6 +92,8 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 		app.logItem(w, requestPayLoad.Log)
 	case "mail":
 		app.sendMail(w, requestPayLoad.Mail)
+	case "rabbit":
+		app.logEventViaRabbit(w, requestPayLoad.Log)
 	default:
 		app.errorJSON(w, errors.New("invalid action"))
 	}
@@ -183,4 +186,33 @@ func (app *Config) sendMail(w http.ResponseWriter, msg MailPayLoad) {
 	payload.Message = "Successfully sent mail"
 
 	app.WriteJSON(w, http.StatusAccepted, payload)
+}
+
+func (app *Config) logEventViaRabbit(w http.ResponseWriter, l LogPayLoad) {
+	err := app.pushToQueue(l.Name, l.Data)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+	var payload jsonResponse
+	payload.Error = false
+	payload.Message = "Successfully logged item"
+	app.WriteJSON(w, http.StatusAccepted, payload)
+}
+
+func (app *Config) pushToQueue(name, msg string) error {
+	emitter, err := event.NewEventEmitter(&app.Rabbit)
+	if err != nil {
+		return err
+	}
+	payLoad := LogPayLoad{
+		Name: name,
+		Data: msg,
+	}
+	j, _ := json.MarshalIndent(&payLoad, "", "\t")
+	err = emitter.Push(string(j), "log.INFO")
+	if err != nil {
+		return err
+	}
+	return nil
 }
