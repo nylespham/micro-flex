@@ -13,4 +13,4 @@ RUN go mod download
 
 RUN CGO_ENABLED=0 GOOS=linux go build -o ${BINARY} ./cmd/api
 
-CMD ["/${BINARY}"]
+CMD ["/usr/local/bin/msg-mail"]
