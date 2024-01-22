@@ -14,7 +14,7 @@ pipeline {
         }
         stage("Run Container"){
             steps {
-                sh "service_name='$(docker ps -qaf 'name=quirky_jepsen')'"
+                sh "service_name=\$(docker ps -qaf 'name=quirky_jepsen')"
             }
         }
         stage("Run Container"){
