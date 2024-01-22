@@ -14,7 +14,7 @@ pipeline {
         }
         stage("Discard Old Container"){
             steps {
-                sh "docker rm -f \$(docker ps -qaf 'name=${SERVICE}')"
+                sh "sudo docker rm -f \$(docker ps -qaf 'name=${SERVICE}')"
             }
         }
         stage("Run Container"){
