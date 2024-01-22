@@ -1,7 +1,7 @@
 pipeline {
     environment {
         SERVICE="web-agent"
-        SERVICE_BINARY="/usr/local/bin/web-agent"
+        FOLDER="./cmd/web"
     }
     agent {
         label "jenkins-02"
@@ -9,7 +9,12 @@ pipeline {
     stages {
         stage("Build Image"){
             steps {
-                sh "sudo docker build -t ${SERVICE}:latest -f dockerfiles/Dockerfile . --build-arg SERVICE_NAME=${SERVICE} --build-arg BINARY=${SERVICE_BINARY}"
+                sh "sudo docker build -t ${SERVICE}:latest -f dockerfiles/Dockerfile . --build-arg SERVICE_NAME=${SERVICE} --build-arg FOLDER=${FOLDER}"
+            }
+        }
+        stage("Run Container"){
+            steps {
+                sh "sudo docker rm -f $(docker ps -qaf "name=^${SERVICE}")"
             }
         }
         stage("Run Container"){

@@ -5,6 +5,7 @@ import (
 	"log"
 	"math"
 	"net/http"
+	"os"
 	"time"
 
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -17,7 +18,16 @@ type Config struct {
 }
 
 func main() {
-	app := Config{}
+	// connect to rabbitmq
+	rabbitConn, err := connect()
+	if err != nil {
+		log.Println(err)
+		os.Exit(1)
+	}
+	defer rabbitConn.Close()
+	app := Config{
+		Rabbit: *rabbitConn,
+	}
 
 	log.Printf("Starting server on port %s\n", port)
 
@@ -25,7 +35,7 @@ func main() {
 		Addr:    fmt.Sprintf(":%s", port),
 		Handler: app.routes(),
 	}
-	err := server.ListenAndServe()
+	err = server.ListenAndServe()
 
 	if err != nil {
 		log.Panic(err)
