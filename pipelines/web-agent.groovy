@@ -14,7 +14,7 @@ pipeline {
         }
         stage("Run Container"){
             steps {
-                sh "sudo docker rm -f $(docker ps -qaf `name=^${SERVICE}`)"
+                sh "sudo docker rm -f $(docker ps -qaf 'name=^web_agent')"
             }
         }
         stage("Run Container"){
