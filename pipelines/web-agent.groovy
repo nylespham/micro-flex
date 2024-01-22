@@ -12,14 +12,14 @@ pipeline {
                 sh "sudo docker build -t ${SERVICE}:latest -f dockerfiles/Dockerfile . --build-arg SERVICE_NAME=${SERVICE} --build-arg FOLDER=${FOLDER}"
             }
         }
-        stage("Run Container"){
+        stage("Discard Old Container"){
             steps {
-                sh "service_name=\$(docker ps -qaf 'name=quirky_jepsen')"
+                sh "docker rm -f \$(docker ps -qaf 'name=${SERVICE}')"
             }
         }
         stage("Run Container"){
             steps {
-                sh "sudo docker run -dp 8100:8100 ${SERVICE}:latest"
+                sh "sudo docker run -dp 8100:8100 -name ${SERVICE} ${SERVICE}:latest"
             }
         }
     }
