@@ -5,13 +5,15 @@ pipeline {
     agent {
         label "jenkins-02"
     }
-    stage("Run Container"){ 
+    stages{
+        stage("Run Container"){ 
             steps {
                 dir("./compose") {
                     sh "sudo docker compose up -d ${SERVICE}"
                 }
             }
         }
+    }
     post {
         always {
             cleanWs(cleanWhenNotBuilt: false,
