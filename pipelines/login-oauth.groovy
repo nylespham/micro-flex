@@ -1,6 +1,7 @@
 pipeline {
     environment {
         SERVICE="login-oauth"
+        FOLDER="./cmd/api"
     }
     agent {
         label "jenkins-02"
