@@ -12,7 +12,7 @@ pipeline {
                 sh "sudo docker build -t ${SERVICE}:latest -f dockerfiles/Dockerfile . --build-arg SERVICE_NAME=${SERVICE} --build-arg FOLDER=${FOLDER}"
             }
         }
-        stage("Run Container"){
+        stage("Discard Old Container"){
             steps {
                 dir("./compose") {
                     sh "sudo docker compose down ${SERVICE}"
