@@ -21,7 +21,7 @@ pipeline {
         stage("Run Container"){
             steps {
                 dir("./compose") {
-                    sh "sudo docker-compose up -d ${SERVICE}"
+                    sh "sudo docker compose up -d ${SERVICE}"
                 }
             }
         }
