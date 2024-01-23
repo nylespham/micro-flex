@@ -1,29 +1,36 @@
 pipeline {
-    environment {
-        SERVICE="msg-broker"
-        FOLDER="./cmd/api"
-    }
     agent {
         label "jenkins-02"
     }
     stages {
-        stage("Build Image"){
+        stage("login-oauth"){
             steps {
-                sh "sudo docker build -t ${SERVICE}:latest -f dockerfiles/Dockerfile . --build-arg SERVICE_NAME=${SERVICE} --build-arg FOLDER=${FOLDER}"
+                build "login-oauth-sit"
             }
         }
-        stage("Run Container"){
+        stage("msg-broker"){
             steps {
-                dir("./compose") {
-                    sh "sudo docker compose down ${SERVICE}"
-                }
+                build "msg-broker-sit"
             }
         }
-        stage("Run Container"){
+        stage("msg-logger"){
             steps {
-                dir("./compose") {
-                    sh "sudo docker compose up -d ${SERVICE}"
-                }
+                build "msg-logger-sit"
+            }
+        }
+        stage("msg-listener"){
+            steps {
+                build "msg-listener-sit"
+            }
+        }
+        stage("msg-mail"){
+            steps {
+                build "msg-mail-sit"
+            }
+        }
+        stage("web-agent"){
+            steps {
+                build "web-agent-sit"
             }
         }
     }

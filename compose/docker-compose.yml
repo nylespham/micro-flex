@@ -51,7 +51,7 @@ services:
     container_name: msg-listener
     image: msg-listener
     ports:
-      - "8300:8300"
+      - "8732:8732"
     restart: always
     healthcheck:
       test: "exit 0"
