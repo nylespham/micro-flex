@@ -79,3 +79,16 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: P@ssw0rd
     healthcheck:
       test: "exit 0"
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:latest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: P@ssw0rd
+    healthcheck:
+      test: "exit 0"
