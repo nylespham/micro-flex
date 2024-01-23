@@ -1,0 +1,97 @@
+version: "3.7"
+
+services:
+
+  web-agent:
+    container_name: web-agent
+    image: web-agent
+    ports:
+      - "8100:8100"
+    restart: always
+    networks:
+      - bridge
+    healthcheck:
+      test: "exit 0"
+
+  login-oauth:
+    container_name: login-oauth
+    image: login-oauth
+    ports:
+      - "13780:13780"
+    restart: always
+    networks:
+      - bridge
+    healthcheck:
+      test: "exit 0"
+
+  msg-broker:
+    container_name: msg-broker
+    image: msg-broker
+    ports:
+      - "8300:8300"
+    restart: always
+    networks:
+      - bridge
+    healthcheck:
+      test: "exit 0"
+
+  msg-logger:
+    container_name: msg-logger
+    image: msg-logger
+    ports:
+      - "12800:12800"
+    restart: always
+    networks:
+      - bridge
+    healthcheck:
+      test: "exit 0"
+
+  msg-mail:
+    container_name: msg-mail
+    image: msg-mail
+    ports:
+      - "4100:4100"
+    restart: always
+    networks:
+      - bridge
+    healthcheck:
+      test: "exit 0"
+
+  msg-listener:
+    container_name: msg-listener
+    image: msg-listener
+    ports:
+      - "8300:8300"
+    restart: always
+    networks:
+      - bridge
+    healthcheck:
+      test: "exit 0"
+
+  db-postgres:
+    container_name: db-postgres
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: P@ssw0rd
+    restart: always
+    networks:
+      - bridge
+    healthcheck:
+      test: "exit 0"
+
+  db-mongo:
+    container_name: db-mongo
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: P@ssw0rd
+    networks:
+      - bridge
+    healthcheck:
+      test: "exit 0"
