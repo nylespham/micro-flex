@@ -1,7 +1,7 @@
 pipeline {
     environment {
         SERVICE="msg-listener"
-        FOLDER="./cmd/api"
+        FOLDER="."
     }
     agent {
         label "jenkins-02"
