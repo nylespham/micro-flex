@@ -1,4 +1,4 @@
-module msg-listenner
+module msg-listener
 
 go 1.21.3
 

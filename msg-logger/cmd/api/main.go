@@ -15,7 +15,7 @@ import (
 const (
 	port     = "12800"
 	rpcPort  = "11200"
-	mongoURL = "mongodb://35.198.205.242:27017"
+	mongoURL = "mongodb://localhost:27017"
 	grpcPort = "13500"
 )
 

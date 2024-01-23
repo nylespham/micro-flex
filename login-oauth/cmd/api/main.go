@@ -66,7 +66,7 @@ func openDB(dsn string) (*sql.DB, error) {
 }
 
 func connectToDB() *sql.DB {
-	dsn := "host=35.198.205.242 port=5433 dbname=postgres user=postgres password=P@ssw0rd sslmode=disable timezone=UTC connect_timeout=5"
+	dsn := "host=localhost port=5432 dbname=postgres user=postgres password=P@ssw0rd sslmode=disable timezone=UTC connect_timeout=5"
 
 	for {
 

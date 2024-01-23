@@ -22,7 +22,7 @@
       "path": "dockerfiles"
     },
     {
-      "path": "msg-listenner"
+      "path": "msg-listener"
     }
   ]
 }

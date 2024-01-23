@@ -1,8 +1,8 @@
 pipeline {
     environment {
-        SERVICE="msg-mail"
+        SERVICE="msg-logger"
         FOLDER="./cmd/api"
-        PORT="4100"
+        PORT="12800"
     }
     agent {
         label "jenkins-02"
@@ -11,6 +11,11 @@ pipeline {
         stage("Build Image"){
             steps {
                 sh "sudo docker build -t ${SERVICE}:latest -f dockerfiles/Dockerfile . --build-arg SERVICE_NAME=${SERVICE} --build-arg FOLDER=${FOLDER}"
+            }
+        }
+        stage("Discard Old Container"){
+            steps {
+                sh "sudo docker rm -f \$(sudo docker ps -qaf 'name=${SERVICE}')"
             }
         }
         stage("Run Container"){

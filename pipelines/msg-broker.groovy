@@ -1,8 +1,8 @@
 pipeline {
     environment {
-        SERVICE="msg-mail"
+        SERVICE="msg-broker"
         FOLDER="./cmd/api"
-        PORT="4100"
+        PORT="8300"
     }
     agent {
         label "jenkins-02"
