@@ -2,7 +2,6 @@ pipeline {
     environment {
         SERVICE="msg-broker"
         FOLDER="./cmd/api"
-        PORT="8300"
     }
     agent {
         label "jenkins-02"
@@ -13,9 +12,18 @@ pipeline {
                 sh "sudo docker build -t ${SERVICE}:latest -f dockerfiles/Dockerfile . --build-arg SERVICE_NAME=${SERVICE} --build-arg FOLDER=${FOLDER}"
             }
         }
+        // stage("Run Container"){
+        //     steps {
+        //         dir("./compose") {
+        //             sh "sudo docker compose down ${SERVICE}"
+        //         }
+        //     }
+        // }
         stage("Run Container"){
             steps {
-                sh "sudo docker run -dp ${PORT}:${PORT} --name ${SERVICE} ${SERVICE}:latest"
+                dir("./compose") {
+                    sh "sudo docker compose up -d ${SERVICE}"
+                }
             }
         }
     }
