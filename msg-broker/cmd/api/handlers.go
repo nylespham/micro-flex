@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"log"
 	"msg-broker/event"
 	"net/http"
 	"net/rpc"
@@ -107,6 +108,8 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayLoad) {
 	// call the login-oauth microservice
 	request, err := http.NewRequest("POST", "http://login-oauth:13780/authenticate", bytes.NewBuffer(jsonData))
 	if err != nil {
+		// log error
+		log.Println(err)
 		app.errorJSON(w, err)
 		return
 	}
