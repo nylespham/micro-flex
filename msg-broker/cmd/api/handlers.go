@@ -43,7 +43,7 @@ func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
 func (app *Config) logItem(w http.ResponseWriter, entry LogPayLoad) {
 	jsonData, _ := json.MarshalIndent(entry, "", "\t")
 
-	logServiceUrl := "http://localhost:12800/log"
+	logServiceUrl := "http://msg-logger/log"
 
 	request, err := http.NewRequest("POST", logServiceUrl, bytes.NewBuffer(jsonData))
 
@@ -104,7 +104,7 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayLoad) {
 	jsonData, _ := json.MarshalIndent(a, "", "\t")
 
 	// call the login-oauth microservice
-	request, err := http.NewRequest("POST", "http://localhost:8080/authenticate", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://login-oauth/authenticate", bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -154,7 +154,7 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayLoad) {
 func (app *Config) sendMail(w http.ResponseWriter, msg MailPayLoad) {
 	jsonData, _ := json.MarshalIndent(msg, "", "\t")
 
-	mailServiceUrl := "http://localhost:4100/send"
+	mailServiceUrl := "http://msg-mail/send"
 
 	request, err := http.NewRequest("POST", mailServiceUrl, bytes.NewBuffer(jsonData))
 
