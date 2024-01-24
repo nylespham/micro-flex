@@ -106,7 +106,7 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayLoad) {
 	jsonData, _ := json.MarshalIndent(a, "", "\t")
 
 	// call the login-oauth microservice
-	request, err := http.NewRequest("POST", "http://login-oauth:13780/authenticate", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://login-oauth/authenticate", bytes.NewBuffer(jsonData))
 	if err != nil {
 		// log error
 		log.Println(err)
