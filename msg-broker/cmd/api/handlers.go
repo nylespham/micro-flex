@@ -6,6 +6,7 @@ import (
 	"errors"
 	"msg-broker/event"
 	"net/http"
+	"net/rpc"
 )
 
 type RequestPayLoad struct {
@@ -43,7 +44,7 @@ func (app *Config) Broker(w http.ResponseWriter, r *http.Request) {
 func (app *Config) logItem(w http.ResponseWriter, entry LogPayLoad) {
 	jsonData, _ := json.MarshalIndent(entry, "", "\t")
 
-	logServiceUrl := "http://msg-logger/log"
+	logServiceUrl := "http://msg-logger:12800/log"
 
 	request, err := http.NewRequest("POST", logServiceUrl, bytes.NewBuffer(jsonData))
 
@@ -89,7 +90,7 @@ func (app *Config) HandleSubmission(w http.ResponseWriter, r *http.Request) {
 	case "auth":
 		app.authenticate(w, requestPayLoad.Auth)
 	case "log":
-		app.logItem(w, requestPayLoad.Log)
+		app.logItemViaRPC(w, requestPayLoad.Log)
 	case "mail":
 		app.sendMail(w, requestPayLoad.Mail)
 	case "rabbit":
@@ -104,7 +105,7 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayLoad) {
 	jsonData, _ := json.MarshalIndent(a, "", "\t")
 
 	// call the login-oauth microservice
-	request, err := http.NewRequest("POST", "http://login-oauth/authenticate", bytes.NewBuffer(jsonData))
+	request, err := http.NewRequest("POST", "http://login-oauth:13780/authenticate", bytes.NewBuffer(jsonData))
 	if err != nil {
 		app.errorJSON(w, err)
 		return
@@ -154,7 +155,7 @@ func (app *Config) authenticate(w http.ResponseWriter, a AuthPayLoad) {
 func (app *Config) sendMail(w http.ResponseWriter, msg MailPayLoad) {
 	jsonData, _ := json.MarshalIndent(msg, "", "\t")
 
-	mailServiceUrl := "http://msg-mail/send"
+	mailServiceUrl := "http://msg-mail:4100/send"
 
 	request, err := http.NewRequest("POST", mailServiceUrl, bytes.NewBuffer(jsonData))
 
@@ -215,4 +216,37 @@ func (app *Config) pushToQueue(name, msg string) error {
 		return err
 	}
 	return nil
+}
+
+type RPCPayLoad struct {
+	Name string
+	Data string
+}
+
+func (app *Config) logItemViaRPC(w http.ResponseWriter, l LogPayLoad) {
+	client, err := rpc.Dial("tcp", "msg-logger:12800")
+
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+
+	rpcPayLoad := RPCPayLoad{
+		Name: l.Name,
+		Data: l.Data,
+	}
+
+	var result string
+	err = client.Call("RPCServer.LogInfo", rpcPayLoad, &result)
+	if err != nil {
+		app.errorJSON(w, err)
+		return
+	}
+	payLoad := jsonResponse{
+		Error:   false,
+		Message: result,
+	}
+
+	app.WriteJSON(w, http.StatusAccepted, payLoad)
+
 }
